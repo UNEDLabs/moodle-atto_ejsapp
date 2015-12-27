@@ -1,0 +1,1 @@
+YUI.add("moodle-atto_ejsapp-button",function(e,t){e.namespace("M.atto_ejsapp").Button=e.Base.create("button",e.M.editor_atto.EditorPlugin,[],{initializer:function(){this.addButton({icon:"ejsapp_icon___",iconComponent:"atto_ejsapp___",buttonName:"ejsapp_icon"})}})},"@VERSION@",{requires:["moodle-editor_ejsapp-plugin"]});

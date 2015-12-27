@@ -1,0 +1,7 @@
+{
+    "moodle-atto_ejsapp-button": {
+        "requires": [
+            "moodle-editor_ejsapp-plugin"
+        ]
+    }
+}
