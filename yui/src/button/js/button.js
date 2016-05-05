@@ -17,7 +17,7 @@
  * @extends M.editor_atto.EditorPlugin
  */
 
-var TEMPLATE = '' +
+var TEMPLATE_JAVA = '' +
                 '<applet code="{{code}}" ' +
                 'codebase="{{codebase}}" id="{{applet_id}}" ' +
                 'width="{{width}}" height="{{height}}">' +
@@ -32,12 +32,10 @@ var TEMPLATE = '' +
                     '<param name="user_moodle" value="admin" />' +
                     '<param name="password_moodle" value="DEPRECATED" />' +
                     '<param name="moodle_upload_file" ' +
-                    'value="http://localhost/mod/ejsapp/upload_file.php" />' +
+                    'value="{{host}}/mod/ejsapp/upload_file.php" />' +
                     '<param name="lookandfeel" value="NIMBUS" />' +
                     '<param name="is_collaborative" value="false" />' +
                 '</applet>';
-    
-    
 
 Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
     initializer: function() {
@@ -49,9 +47,14 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         });
 
         var self = this;
-        document.addEventListener('atto_ejsapp_form_submit', function(e) {
+        document.addEventListener('atto_ejsapp_form_submit_java', function(e) {
             self._dialogue.hide();
-            self._insertContent(e.detail);
+            self._insertContentJava(e.detail);
+        });
+
+        document.addEventListener('atto_ejsapp_form_submit_js', function(e) {
+            self._dialogue.hide();
+            self._insertContentJs(e.detail);
         });
 
     },
@@ -103,33 +106,14 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
 
 
     /**
-     * Create the content
+     * Create the content for Java
      *
      * @private
      */
-    _insertContent: function(campos_form) {
+    _insertContentJava: function(campos_form) {
         this.editor.focus();
 
-        /*var html = '<applet code="users.dav.wc.stp.Ising2D_pkg.Ising2DApplet.class" ' +
-            'codebase="/mod/ejsapp/jarfiles/2/3/" id="ejs_stp_Ising2D" ' +
-            'width="553" height="578">' +
-            '<param name="cache_archive" value="ejs_stp_Ising2D.jar"/>' +
-            '<param name="permissions" value="sandbox"/>' +
-            '<param name="codebase_lookup" value="false"/>' +
-            '<param name="context_id" value="8"/>' +
-            '<param name="user_id" value="2"/>' +
-            '<param name="ejsapp_id" value="3"/>' +
-            '<param name="language" value="en"/>' +
-            '<param name="username" value="Admin Usuario"/>' +
-            '<param name="user_moodle" value="admin"/>' +
-            '<param name="password_moodle" value="DEPRECATED"/>' +
-            '<param name="moodle_upload_file" ' +
-            'value="http://localhost/mod/ejsapp/upload_file.php"/>' +
-            '<param name="lookandfeel" value="NIMBUS"/>' +
-            '<param name="is_collaborative" value="false"/>' +
-            '</applet>';*/
-
-        var template = Y.Handlebars.compile(TEMPLATE);
+        var template = Y.Handlebars.compile(TEMPLATE_JAVA);
         var content = template({
             code: campos_form.code,
             codebase: campos_form.codebase,
@@ -137,9 +121,90 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             width: campos_form.width,
             height: campos_form.height,
             cache_archive: campos_form.cache_archive,
-            context_id: campos_form.context_id
+            context_id: campos_form.context_id,
+            host: campos_form.host
         });
+
+        var applet_id = campos_form.applet_id;
+        if(campos_form.simulation_state_file !== ''){
+            var simfile = campos_form.simulation_state_file;
+            var content_state = '<script type="text/javascript">function loadState(count) {' +
+            'if (!' + applet_id + '._simulation && count > 0) {' +
+            'window.setTimeout( function() { loadState( --count ); }, 1000 );' +
+            '}' +
+            'else if (' + applet_id + '._simulation) {' +
+            'window.setTimeout( function() {' + applet_id + '._readState("url:' + simfile + '"); }, 100 );' +
+            '' + applet_id + '._view.resetTraces();' +
+            '}' +
+            '}' +
+            'loadState(10);</script>';
+
+            content += content_state;
+        }
+
+        if(campos_form.simulation_controller_file !== ''){
+            var cntfile = campos_form.simulation_controller_file;
+            var content_cnt = '<script type="text/javascript">function loadController(count) {' +
+                'if (!' + applet_id + '._model && count > 0) {' +
+                'window.setTimeout( function() { loadController( --count ); }, 1000 );' +
+                '}' +
+                'else if (' + applet_id + '._model) {' +
+                'window.setTimeout( function() {' +
+                'var element = ' + applet_id + '._model.getUserData("_codeController");' +
+                'element.setController(' + applet_id + '._readText("url:' + cntfile + '")); }, 100 );' +
+                '}' +
+                '}' +
+                'loadController(10);</script>';
+
+            content += content_cnt;
+        }
+
+        if(campos_form.simulation_recording_file !== ''){
+            var recfile = campos_form.simulation_recording_file;
+            var content_rec = '<script type="text/javascript">function loadExperiment(count) {' +
+                'if (!' + applet_id + '._simulation && count > 0) {' +
+                'window.setTimeout( function() { loadExperiment( --count ); }, 1000 );' +
+                '}' +
+                'else if (' + applet_id + '._simulation) {' +
+                'window.setTimeout( function() {' +
+                applet_id + '._simulation.runLoadExperiment("url:' + recfile + '"); }, 100 );' +
+                '}' +
+                '}' +
+                'loadExperiment(10);</script>';
+
+            content += content_rec;
+        }
+
         this.get('host').insertContentAtFocusPoint(content);
+
+        this.markUpdated();
+    },
+
+    /**
+     * Create the content
+     *
+     * @private
+     */
+    _insertContentJs: function(campos_form) {
+        this.editor.focus();
+        var dialogo = this.get('host');
+
+        var ioconfig = {
+            method: 'POST',
+            sync: true,
+            data: {'sesskey' : M.cfg.sesskey},
+            on: {
+                success: function (o, response) {
+                    dialogo.insertContentAtFocusPoint(response.responseText);
+                },
+
+                failure: function () {
+                    dialogo.insertContentAtFocusPoint("error getting the simulation");
+                }
+            }
+        };
+
+        Y.io(campos_form.ruta_fichero, ioconfig);
 
         this.markUpdated();
     }

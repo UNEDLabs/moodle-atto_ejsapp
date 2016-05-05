@@ -30,6 +30,7 @@ $string['appletfile_required'] = 'A .jar or a .zip file must be selected';
 $string['appletfile_help'] = 'Select the .jar or .zip file that encapsulates the Easy Java(script) Simulation (EJsS) application. The official website of EJsS is http://fem.um.es/Ejs/';
 $string['title'] = 'page title';
 
+$string['size_header'] = 'Customize size';
 $string['applet_size_conf'] = 'Size the applet';
 $string['applet_size_conf_help'] = 'Three options: 1) "Preserve original size" will preserve the original size of the EJS applet, 2) "Let Moodle set the size" will resize the applet to take up all the possible space while mantaining the original aspect ratio, 3) "Let the user set the size" will let the user to set the size of the applet and select whether to preserve its original aspect ratio or not.';
 $string['preserve_applet_size'] = 'Preserve original size';
@@ -44,3 +45,17 @@ $string['custom_width_required'] = 'WARNING: Applet width was not set. You must 
 
 $string['custom_height'] = 'Applet height (px)';
 $string['custom_height_required'] = 'WARNING: Applet height was not set. You must provide a different value.';
+
+$string['state_file'] = '.xml or .json file with the state to be read when this EJsS lab loads';
+$string['statefile'] = 'Easy Java(script) Simulation State';
+$string['statefile_help'] = 'Select the .xml (for Java) or .json (for Javascript) file with the state the EJsS application should load.';
+
+$string['controller_file'] = '.cnt file with the controller to be load when the EJS is initialized';
+$string['controllerfile'] = 'Easy Java(script) Simulation Controller';
+$string['controllerfile_help'] = 'Select the .cnt file with the code of the controller to be load when the the EJS application is initialized.';
+
+$string['recording_file'] = '.rec file with the recording to be run when this EJS lab loads';
+$string['recordingfile'] = 'Easy Java(script) Simulations Recording';
+$string['recordingfile_help'] = 'Select the .rec file with the interaction recording the EJS application should run.';
+
+$string['end_message'] = 'End of reproduction';

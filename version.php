@@ -27,3 +27,4 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->version   = 2015110400;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2015050500;        // Requires this Moodle version.
 $plugin->component = 'atto_ejsapp';  // Full name of the plugin (used for diagnostics).
+$plugin->dependencies = array('mod_ejsapp' => 2016022300);
