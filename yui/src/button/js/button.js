@@ -195,7 +195,8 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             data: {'sesskey' : M.cfg.sesskey},
             on: {
                 success: function (o, response) {
-                    dialogo.insertContentAtFocusPoint(response.responseText);
+                    var content = "--inicio simulacion--\n" + response.responseText + "\n<br />--fin simulacion--";
+                    dialogo.insertContentAtFocusPoint(content);
                 },
 
                 failure: function () {
