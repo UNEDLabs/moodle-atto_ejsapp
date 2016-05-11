@@ -175,14 +175,8 @@ if ($fromform = $mform->get_data()) {
         //Extracts de .zip, and modify some of the extracted files
         modifications_for_javascript($filepath, $ejsapp, $folderpath, $codebase);
 
-        if (count(explode('/', $CFG->wwwroot)) <= 3) {
-            $www_path = $CFG->wwwroot . $codebase;
-            $path  = $CFG->dirroot . $codebase;
-        }
-        else {
-            $www_path = substr($CFG->wwwroot, 0, strrpos( $CFG->wwwroot, '/') ) . $codebase;
-            $path  = substr($CFG->dirroot, 0, strrpos( $CFG->dirroot, '/') ) . $codebase;
-        }
+        $www_path = $CFG->wwwroot . $codebase;
+        $path  = $CFG->dirroot . $codebase;
 
         $filename = substr($ejsapp->applet_name, 0, strpos($ejsapp->applet_name, '.'));
         $extension = substr($ejsapp->applet_name, strpos($ejsapp->applet_name, ".") + 1);

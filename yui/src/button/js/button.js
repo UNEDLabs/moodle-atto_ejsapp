@@ -69,7 +69,7 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
     _displayDialogue: function() {
 
         var dialogue = this.getDialogue({
-            headerContent: 'headerContent del dialogo EJSAPP',
+            headerContent: 'EJSAPP for Atto',
             focusAfterHide: true,
             width: '800px'
         });
