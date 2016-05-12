@@ -7,7 +7,8 @@
 
 
 //defined('MOODLE_INTERNAL') || die();
-require(__DIR__ . '/../../../../../../config.php');
+require_once(__DIR__ . '/../../../../../../config.php');
+require_once (__DIR__ . '/atto_ejss_simulation.php');
 require_once(__DIR__ . '/ejsappdialog_form.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/filelib.php');
@@ -25,93 +26,26 @@ $PAGE->set_pagelayout('popup');
 
 $mform = new atto_ejsapp_mod_form();
 if ($fromform = $mform->get_data()) {
-    //In this case you process validated data. $mform->get_data() returns data posted in form.
-    /*echo "<pre>";
-    var_dump($fromform);
-    die();*/
+    //If there is date in the form Post, the simulation object is created
+    $objSimulation = new atto_ejss_simulation($CFG);
 
-
-    $maxbytes = get_max_upload_file_size($CFG->maxbytes);
-
-    // Creating the .jar or .zip file in dataroot and updating the files table in the database
-    $draftitemid_applet = $fromform->appletfile;
-    /*echo "<pre>";
-    var_dump($fromform->appletfile);
-    die();*/
-
-    //Obtains the folder number to store the file
-    $incremental = 0;
-    $codebase = '/lib/editor/atto/plugins/ejsapp/jarfiles/';
-    $folderpath = $CFG->dirroot . $codebase;
-    while((file_exists($folderpath.$incremental))){
-        $incremental ++;
-    }
-
-    if ($draftitemid_applet) {
-        file_save_draft_area_files($draftitemid_applet, $context->id, 'atto_ejsapp', 'jarfiles', $incremental, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 1, 'accepted_types' => array('application/java-archive', 'application/zip')));
-    }
-
-    // Obtain the uploaded .zip or .jar file from moodledata using the information in the files table
-    $file_records = $DB->get_records('files', array('contextid'=>$context->id, 'component'=>'atto_ejsapp', 'filearea'=>'jarfiles', 'itemid'=>$incremental), 'filesize DESC');
-    $file_record = reset($file_records);
-    $fs = get_file_storage();
-    $file = $fs->get_file_by_id($file_record->id);
-
-    // Create folders to store the .jar or .zip file
-    if (!file_exists($folderpath)) {
-        mkdir($folderpath, 0755);
-    }
-    $codebase = '/lib/editor/atto/plugins/ejsapp/jarfiles/'. $incremental . '/';
-    $folderpath = $CFG->dirroot . '/lib/editor/atto/plugins/ejsapp/jarfiles/' . $incremental . '/';
-    if (!file_exists($folderpath)) { // updating, not creating, the ejsapp activity
-        mkdir($folderpath, 0770);
-    }
-
-    // Create folders to store the additional files like state
-    if (!file_exists($folderpath."simfiles/")) {
-        mkdir($folderpath."simfiles/", 0755);
-    }
-
-    // Copy the jar/zip file to its destination folder in jarfiles
-    $filepath = $folderpath . $file_record->filename;
-    $file->copy_content_to($filepath);
-
-    $ext = pathinfo($file->get_filename(), PATHINFO_EXTENSION);
-
-    //Simulation state file
     $simulation_state_file = "";
-    file_save_draft_area_files($fromform->statefile, $context->id, 'atto_ejsapp', 'statefiles', $incremental, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 1, 'accepted_types' => array('application/xml', 'application/json')));
-    $file_records_state = $DB->get_records('files', array('contextid'=>$context->id, 'component'=>'atto_ejsapp', 'filearea'=>'statefiles', 'itemid'=>$incremental), 'filesize DESC');
-    $file_record_state = reset($file_records_state);
-    if($file_record_state) {
-        $fs = get_file_storage();
-        $file_state = $fs->get_file_by_id($file_record_state->id);
-        $file_state->copy_content_to($folderpath . "simfiles/".$file_record_state->filename);
-        $simulation_state_file = $CFG->wwwroot . '/lib/editor/atto/plugins/ejsapp/jarfiles/' . $incremental . "/simfiles/".$file_record_state->filename;
-    }
-
-    //controller file .cnt
     $simulation_controller_file = "";
-    file_save_draft_area_files($fromform->controllerfile, $context->id, 'atto_ejsapp', 'controllerfile', $incremental, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 1, 'accepted_types' => '.cnt'));
-    $file_records_controller = $DB->get_records('files', array('contextid'=>$context->id, 'component'=>'atto_ejsapp', 'filearea'=>'controllerfile', 'itemid'=>$incremental), 'filesize DESC');
-    $file_record_controller = reset($file_records_controller);
-    if($file_record_controller) {
-        $fs = get_file_storage();
-        $file_controller = $fs->get_file_by_id($file_record_controller->id);
-        $file_controller->copy_content_to($folderpath . "simfiles/".$file_record_controller->filename);
-        $simulation_controller_file = $CFG->wwwroot . '/lib/editor/atto/plugins/ejsapp/jarfiles/' . $incremental . "/simfiles/".$file_record_controller->filename;
-    }
-
-    //Recording file rec
     $simulation_recording_file = "";
-    file_save_draft_area_files($fromform->recordingfile, $context->id, 'atto_ejsapp', 'recordingfiles', $incremental, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 1, 'accepted_types' => '.rec'));
-    $file_records_recording = $DB->get_records('files', array('contextid'=>$context->id, 'component'=>'atto_ejsapp', 'filearea'=>'recordingfiles', 'itemid'=>$incremental), 'filesize DESC');
-    $file_record_recording = reset($file_records_recording);
-    if($file_record_recording) {
-        $fs = get_file_storage();
-        $file_recording = $fs->get_file_by_id($file_record_recording->id);
-        $file_recording->copy_content_to($folderpath . "simfiles/".$file_record_recording->filename);
-        $simulation_recording_file = $CFG->wwwroot . '/lib/editor/atto/plugins/ejsapp/jarfiles/' . $incremental . "/simfiles/".$file_record_recording->filename;
+
+    //Saves simulation files to draft
+    if($objSimulation->saveSimulationFilesToDraft($CFG, $context, $fromform->appletfile)) {
+        //Saves the simulations files into the required path
+        $ext = $objSimulation->createSimulationFiles($CFG, $DB, $context);
+
+        //Creates initialization files if they exist
+        $objSimulation->createInitializationFiles($CFG, $DB, $context, $fromform);
+
+        //Asigns the path of the initialization files
+        $simulation_state_file = $objSimulation->getSimulationStateFile();
+        $simulation_controller_file = $objSimulation->getSimulationControllerFile();
+        $simulation_recording_file = $objSimulation->getSimulationRecordingFile();
+
     }
 
 
@@ -122,7 +56,7 @@ if ($fromform = $mform->get_data()) {
         $codebase = '';
         $height = 0;
         $width = 0;
-        $applet_id = substr($file_record->filename, 0, -4);
+        $applet_id = substr($objSimulation->getFileName(), 0, -4);
         $cache_archive = $applet_id . '.jar';
         $context_id = $context->id;
         $moodle_upload_file = $CFG->wwwroot . "/mod/ejsapp/upload_file.php";
@@ -132,11 +66,11 @@ if ($fromform = $mform->get_data()) {
         if (!empty($match_result) and $match_result[1]) {
             $codebase .= '/' . $match_result[1];
         }
-        $codebase .= '/lib/editor/atto/plugins/ejsapp/jarfiles/' . $incremental . '/';
+        $codebase .= $objSimulation->getCodebase();
 
-        if (file_exists($filepath)) {
+        if (file_exists($objSimulation->getFilePath())) {
             // Extract the manifest.mf file from the .jar
-            $manifest = file_get_contents('zip://' . $filepath . '#' . 'META-INF/MANIFEST.MF');
+            $manifest = file_get_contents('zip://' . $objSimulation->getFilePath() . '#' . 'META-INF/MANIFEST.MF');
 
 
             // get the .class file
@@ -165,7 +99,6 @@ if ($fromform = $mform->get_data()) {
             }
         }
 
-
         echo $mform->generateEventJava($code, $codebase, $applet_id, $width, $height, $cache_archive, $context_id, $CFG->wwwroot, $simulation_state_file, $simulation_controller_file, $simulation_recording_file);
     } else { //El fichero subido es un JS
         $ejsapp = new stdClass();
@@ -173,10 +106,10 @@ if ($fromform = $mform->get_data()) {
         $ejsapp->css = "";
 
         //Extracts de .zip, and modify some of the extracted files
-        modifications_for_javascript($filepath, $ejsapp, $folderpath, $codebase);
+        modifications_for_javascript($objSimulation->getFilePath(), $ejsapp, $objSimulation->getFolderPath(), $objSimulation->getCodebase());
 
-        $www_path = $CFG->wwwroot . $codebase;
-        $path  = $CFG->dirroot . $codebase;
+        $www_path = $CFG->wwwroot . $objSimulation->getCodebase();
+        $path  = $CFG->dirroot . $objSimulation->getCodebase();
 
         $filename = substr($ejsapp->applet_name, 0, strpos($ejsapp->applet_name, '.'));
         $extension = substr($ejsapp->applet_name, strpos($ejsapp->applet_name, ".") + 1);
@@ -224,7 +157,6 @@ if ($fromform = $mform->get_data()) {
                 file_put_contents($ruta_fichero, $code);
             }
         }
-
 
         echo $mform->generateEventJs($www_fichero);
     }
