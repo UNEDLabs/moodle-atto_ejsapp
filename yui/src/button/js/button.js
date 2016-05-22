@@ -129,15 +129,17 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         if(campos_form.simulation_state_file !== ''){
             var simfile = campos_form.simulation_state_file;
             var content_state = '<script type="text/javascript">function loadState(count) {' +
-            'if (!' + applet_id + '._simulation && count > 0) {' +
-            'window.setTimeout( function() { loadState( --count ); }, 1000 );' +
+            'applet = document.getElementById("' + applet_id + '");' +
+            'var to = typeof (applet);' +
+            'if ((to == "function" || to == "object") && count > 0) {' +
+                'window.setTimeout( function() { loadState( --count ); }, 500 );' +
             '}' +
-            'else if (' + applet_id + '._simulation) {' +
-            'window.setTimeout( function() {' + applet_id + '._readState("url:' + simfile + '"); }, 100 );' +
-            '' + applet_id + '._view.resetTraces();' +
+            'else if (to == "function" || to == "object") {' +
+                'window.setTimeout( function() { applet._readState("url:' + simfile + '"); }, 200 );' +
+                'applet._view.resetTraces();' +
+             '}' +
             '}' +
-            '}' +
-            'loadState(10);</script>';
+            'loadState(40);</script>';
 
             content += content_state;
         }
@@ -145,16 +147,24 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         if(campos_form.simulation_controller_file !== ''){
             var cntfile = campos_form.simulation_controller_file;
             var content_cnt = '<script type="text/javascript">function loadController(count) {' +
-                'if (!' + applet_id + '._model && count > 0) {' +
-                'window.setTimeout( function() { loadController( --count ); }, 1000 );' +
+                'applet = document.getElementById("' + applet_id + '");' +
+                'var to = typeof (applet);' +
+                'if ((to == "function" || to == "object") && count > 0) {' +
+                'window.setTimeout( function() { loadController( --count ); }, 500 );' +
                 '}' +
-                'else if (' + applet_id + '._model) {' +
+                'else if (to == "function" || to == "object") {' +
                 'window.setTimeout( function() {' +
-                'var element = ' + applet_id + '._model.getUserData("_codeController");' +
-                'element.setController(' + applet_id + '._readText("url:' + cntfile + '")); }, 100 );' +
+                    'var xmlhttp = new XMLHttpRequest();' +
+                    'var cnt_text = "";' +
+                    'xmlhttp.onreadystatechange=function(){' +
+                    'if (xmlhttp.readyState==4 && xmlhttp.status==200){cnt_text = xmlhttp.responseText;}};' +
+                    'xmlhttp.open("GET", "' + cntfile + '", false );' +
+                    'xmlhttp.send();' +
+                    'var element = applet._model.getUserData("_codeController");' +
+                    'element.setController(cnt_text); }, 200 );' +
                 '}' +
                 '}' +
-                'loadController(10);</script>';
+                'loadController(40);</script>';
 
             content += content_cnt;
         }
@@ -162,15 +172,16 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         if(campos_form.simulation_recording_file !== ''){
             var recfile = campos_form.simulation_recording_file;
             var content_rec = '<script type="text/javascript">function loadExperiment(count) {' +
-                'if (!' + applet_id + '._simulation && count > 0) {' +
-                'window.setTimeout( function() { loadExperiment( --count ); }, 1000 );' +
+                'applet = document.getElementById("' + applet_id + '");' +
+                'var to = typeof (applet);' +
+                'if ((to == "function" || to == "object") && count > 0) {' +
+                'window.setTimeout( function() { loadExperiment( --count ); }, 500 );' +
                 '}' +
-                'else if (' + applet_id + '._simulation) {' +
-                'window.setTimeout( function() {' +
-                applet_id + '._simulation.runLoadExperiment("url:' + recfile + '"); }, 100 );' +
+                'else if (to == "function" || to == "object") {' +
+                'window.setTimeout( function() { applet._simulation.runLoadExperiment("url:' + recfile + '"); }, 200 );' +
                 '}' +
                 '}' +
-                'loadExperiment(10);</script>';
+                'loadExperiment(40);</script>';
 
             content += content_rec;
         }

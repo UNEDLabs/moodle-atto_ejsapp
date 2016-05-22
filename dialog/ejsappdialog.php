@@ -149,7 +149,12 @@ if ($fromform = $mform->get_data()) {
             $end_message = get_string('end_message','ejsapp');
             $search = "window.addEventListener('scroll', function () { if (_model._resized) _model._resized(window.innerWidth,window.innerHeight); }, false);";
             $replace = "window.addEventListener('scroll', function () { if (_model._resized) _model._resized(window.innerWidth,window.innerHeight); }, false);
-                        window.addEventListener('load', function() { _model.readText('$simulation_recording_file','.rec',function(content){_model.playCapture(JSON.parse(content),function(){alert('$end_message')})}); }, false);";
+                        _model.readText('$simulation_recording_file','.rec',function(content){_model.playCapture(JSON.parse(content),function(){alert('$end_message')})});
+                        };
+                        }, 200)
+                        var kk = setInterval(function() {
+                        if(false) {
+                        ";
 
             if (file_exists($ruta_fichero)) {
                 $code = file_get_contents($ruta_fichero);
