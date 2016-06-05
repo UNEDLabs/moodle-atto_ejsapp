@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'atto_ejsapp', language 'en'.
+ * Strings for component 'atto_ejsapp', language 'es'.
  *
  * @package    atto_ejsapp
  * @copyright  2015 Jorge Esteban
@@ -26,5 +26,4 @@ $string['pluginname'] = 'atto_ejsapp';
 $string['title'] = 'EJSApp for Atto';
 $string['xxxxxx'] = 'EJSApp for Atto';
 
-$string['size_header'] = 'Customize size';
-
+$string['size_header'] = 'Personalizar tama&ntilde;o';
