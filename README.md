@@ -10,10 +10,10 @@ This plugin installs a new button for the Atto editor in Moodle to add EjsS appl
 2. License
 ==========
 
-EJSApp for Atto Proxy is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+EJSApp for Atto is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-EJSApp for Atto Proxy is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+EJSApp for Atto is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 The GNU General Public License is available on <http://www.gnu.org/licenses/>
