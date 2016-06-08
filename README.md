@@ -30,7 +30,7 @@ installation directory.
 4. Dependencies
 ===============
 
-This module needs the ejsapp module to be of any use. It works with version 2.1 (or later) of EJSApp. You can find and
+This module needs the ejsapp module to be of any use. It works with version 2.4 (or later) of EJSApp. You can find and
 download it at https://moodle.org/plugins/view.php?plugin=mod_ejsapp, in the plugins section in the Moodle.org
 webpage or at https://github.com/UNEDLabs.
 
