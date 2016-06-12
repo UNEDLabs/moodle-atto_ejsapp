@@ -156,14 +156,8 @@ Y.namespace('M.atto_ejsapp').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                 '}' +
                 'else if (to == "function" || to == "object") {' +
                 'window.setTimeout( function() {' +
-                    'var xmlhttp = new XMLHttpRequest();' +
-                    'var cnt_text = "";' +
-                    'xmlhttp.onreadystatechange=function(){' +
-                    'if (xmlhttp.readyState==4 && xmlhttp.status==200){cnt_text = xmlhttp.responseText;}};' +
-                    'xmlhttp.open("GET", "' + cntfile + '", false );' +
-                    'xmlhttp.send();' +
                     'var element = applet._model.getUserData("_codeController");' +
-                    'element.setController(cnt_text); }, 200 );' +
+                    'element.setController(applet._readText("url:' + cntfile + '")); }, 200 );' +
                 '}' +
                 '}' +
                 'loadController(40);</script>';
