@@ -5,7 +5,6 @@
  * @subpackage atto_ejsapp
  */
 
-
 //defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/../../../../../../config.php');
 require_once ('atto_ejss_simulation.php');
@@ -15,6 +14,8 @@ require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/filestorage/zip_packer.php');
 //Se requiere el plugin /mod/ejsapp
 require_once($CFG->libdir . '/../mod/ejsapp/locallib.php');
+
+global $DB, $PAGE;
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -32,7 +33,6 @@ if ($fromform = $mform->get_data()) {
     $simulation_state_file = "";
     $simulation_controller_file = "";
     $simulation_recording_file = "";
-
     //Saves simulation files to draft
     if($objSimulation->saveSimulationFilesToDraft($CFG, $context, $fromform->appletfile)) {
         //Saves the simulations files into the required path
@@ -48,7 +48,6 @@ if ($fromform = $mform->get_data()) {
     } else {
         $ext = '';
     }
-
 
     if ($ext == 'jar') {//Si el fichero subido es un applet
         //Inicializa los elementos
@@ -79,28 +78,39 @@ if ($fromform = $mform->get_data()) {
 
             // width
             $manifest_width = get_width_for_java($manifest);
-            if ($fromform->custom_width != "") {
-                $width = $fromform->custom_width;
+            if ($fromform->custom_width) {
+                if ($fromform->custom_width != "") {
+                    $width = $fromform->custom_width;
+                } else {
+                    $width = $manifest_width;
+                }
             } else {
                 $width = $manifest_width;
             }
 
             //height
             $manifest_height = get_height_for_java($manifest);
-            if ($fromform->custom_height != "") {
-                $height = $fromform->custom_height;
+            if ($fromform->custom_height) {
+                if ($fromform->custom_height != "") {
+                    $height = $fromform->custom_height;
+                } else {
+                    $height = $manifest_height;
+                }
             } else {
                 $height = $manifest_height;
             }
 
             //aspect ratio
-            if ($fromform->preserve_aspect_ratio != 0) {
-                $height = floor($width * $manifest_height / $manifest_width);
+            if ($fromform->preserve_aspect_ratio) {
+                if ($fromform->preserve_aspect_ratio != 0) {
+                    $height = floor($width * $manifest_height / $manifest_width);
+                }
             }
         }
 
         echo $mform->generateEventJava($code, $codebase, $applet_id, $width, $height, $cache_archive, $context_id, $CFG->wwwroot, $simulation_state_file, $simulation_controller_file, $simulation_recording_file);
-    } else if ($ext == '.zip') { //El fichero subido es un JS
+    } else if ($ext == 'zip') { //El fichero subido es un JS
+        error_log("INICIO");
         $ejsapp = new stdClass();
         $ejsapp->applet_name = "";
         $ejsapp->css = "";
@@ -162,6 +172,8 @@ if ($fromform = $mform->get_data()) {
                 file_put_contents($ruta_fichero, $code);
             }
         }
+
+        error_log("FIN");
 
         echo $mform->generateEventJs($www_fichero);
     }

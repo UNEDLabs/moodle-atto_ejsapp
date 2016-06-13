@@ -6,6 +6,7 @@
  * Time: 21:42
  */
 
+global $CFG;
 //defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir."/formslib.php");
 
