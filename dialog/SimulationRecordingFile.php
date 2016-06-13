@@ -1,6 +1,6 @@
 <?php
 
-require_once (__DIR__ . '/SimulationInitializationFile.php');
+require_once ('SimulationInitializationFile.php');
 
 /**
  * Created by PhpStorm.

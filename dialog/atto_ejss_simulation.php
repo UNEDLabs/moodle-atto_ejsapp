@@ -1,8 +1,8 @@
 <?php
 
-require_once (__DIR__ . '/SimulationStateFile.php');
-require_once (__DIR__ . '/SimulationControllerFile.php');
-require_once (__DIR__ . '/SimulationRecordingFile.php');
+require_once ('SimulationStateFile.php');
+require_once ('SimulationControllerFile.php');
+require_once ('SimulationRecordingFile.php');
 
 /**
  * This class represents the simulation
@@ -35,27 +35,27 @@ class atto_ejss_simulation
     private $filepath;
 
     /**
-     * simulation´s file extension
+     * simulationï¿½s file extension
      */
     private $ext;
 
     /**
-     * simulation´s state file
+     * simulationï¿½s state file
      */
     private $simulationStateFile;
 
     /**
-     * simulation´s Controller file
+     * simulationï¿½s Controller file
      */
     private $simulationControllerFile;
 
     /**
-     * simulation´s Recording file
+     * simulationï¿½s Recording file
      */
     private $simulationRecordingFile;
 
     /**
-     * file´s name
+     * fileï¿½s name
      */
     private $fileName;
 

@@ -8,8 +8,8 @@
 
 //defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/../../../../../../config.php');
-require_once (__DIR__ . '/atto_ejss_simulation.php');
-require_once(__DIR__ . '/ejsappdialog_form.php');
+require_once ('atto_ejss_simulation.php');
+require_once('ejsappdialog_form.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/filestorage/zip_packer.php');
@@ -45,12 +45,12 @@ if ($fromform = $mform->get_data()) {
         $simulation_state_file = $objSimulation->getSimulationStateFile();
         $simulation_controller_file = $objSimulation->getSimulationControllerFile();
         $simulation_recording_file = $objSimulation->getSimulationRecordingFile();
-
+    } else {
+        $ext = '';
     }
 
 
     if ($ext == 'jar') {//Si el fichero subido es un applet
-
         //Inicializa los elementos
         $code = '';
         $codebase = '';
@@ -100,7 +100,7 @@ if ($fromform = $mform->get_data()) {
         }
 
         echo $mform->generateEventJava($code, $codebase, $applet_id, $width, $height, $cache_archive, $context_id, $CFG->wwwroot, $simulation_state_file, $simulation_controller_file, $simulation_recording_file);
-    } else { //El fichero subido es un JS
+    } else if ($ext == '.zip') { //El fichero subido es un JS
         $ejsapp = new stdClass();
         $ejsapp->applet_name = "";
         $ejsapp->css = "";
@@ -178,4 +178,3 @@ if ($fromform = $mform->get_data()) {
     $mform->display();
     echo $OUTPUT->footer();
 }
-?>
