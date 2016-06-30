@@ -110,7 +110,6 @@ if ($fromform = $mform->get_data()) {
 
         echo $mform->generateEventJava($code, $codebase, $applet_id, $width, $height, $cache_archive, $context_id, $CFG->wwwroot, $simulation_state_file, $simulation_controller_file, $simulation_recording_file);
     } else if ($ext == 'zip') { //El fichero subido es un JS
-        error_log("INICIO");
         $ejsapp = new stdClass();
         $ejsapp->applet_name = "";
         $ejsapp->css = "";
@@ -172,8 +171,6 @@ if ($fromform = $mform->get_data()) {
                 file_put_contents($ruta_fichero, $code);
             }
         }
-
-        error_log("FIN");
 
         echo $mform->generateEventJs($www_fichero);
     }

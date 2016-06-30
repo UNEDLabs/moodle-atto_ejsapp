@@ -152,7 +152,7 @@ class atto_ejsapp_mod_form extends moodleform
                     });
                     window.parent.document.dispatchEvent(event);
                 </script>";
-
+        error_log("AQUI");
         return $script;
     }
 
