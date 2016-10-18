@@ -27,6 +27,23 @@ then you are fine.
 This is a module plugin for Moodle so you should place the ejsapp folder in your /lib/editor/atto/plugins folder, inside your Moodle
 installation directory.
 
+In order to get this plugin to properly work you may need to do a few things:
+
+	A. Modify your database properties file (my.cnf or similar) so that it accepts big enough file sizes and execution times, e.g:
+		wait_timeout            = 3600
+		max_allowed_packet 	= 200M
+		max_heap_table_size     = 2G
+		tmp_table_size          = 2G
+
+	B. In Moodle, go to Site Administration>Secutiry>Site policies and enable the option "Enable trusted content".
+
+	C. In the same place, make sure you use a big enough value in the "Maximum uploaded file size" parameter. You need to check
+	that such parameter is also big enough in your Course options and in the options for the activity from which you are going
+	to use the EJSApp Atto plugin.
+	
+	D. Also please note that Javascript applications uploaded with this plugin may not be displayed if filters such as Tex notation
+	or MathJax are enabled.
+
 4. Dependencies
 ===============
 
